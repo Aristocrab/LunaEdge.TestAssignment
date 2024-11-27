@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunaEdge.TestAssignment.AppHost", "LunaEdge.TestAssignment.AppHost\LunaEdge.TestAssignment.AppHost.csproj", "{99D7D4AC-A52D-4D33-84A5-2B4777CEF547}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunaEdge.TestAssignment.ServiceDefaults", "LunaEdge.TestAssignment.ServiceDefaults\LunaEdge.TestAssignment.ServiceDefaults.csproj", "{6258F223-9251-4540-945B-AB7C9AE454B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunaEdge.TestAssignment.WebApi", "LunaEdge.TestAssignment.WebApi\LunaEdge.TestAssignment.WebApi.csproj", "{EC7C9979-4C73-44A9-BC16-11389F4F6635}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspire", "aspire", "{6A9A1185-604B-4516-BAF6-0ABDBDF65CEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunaEdge.TestAssignment.Domain", "LunaEdge.TestAssignment.Domain\LunaEdge.TestAssignment.Domain.csproj", "{BEFF3690-204B-4EF1-8504-896E074C3D7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunaEdge.TestAssignment.Application", "LunaEdge.TestAssignment.Application\LunaEdge.TestAssignment.Application.csproj", "{DF9B43A5-4996-4C98-9828-AE68DD97A9A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99D7D4AC-A52D-4D33-84A5-2B4777CEF547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99D7D4AC-A52D-4D33-84A5-2B4777CEF547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99D7D4AC-A52D-4D33-84A5-2B4777CEF547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99D7D4AC-A52D-4D33-84A5-2B4777CEF547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6258F223-9251-4540-945B-AB7C9AE454B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6258F223-9251-4540-945B-AB7C9AE454B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6258F223-9251-4540-945B-AB7C9AE454B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6258F223-9251-4540-945B-AB7C9AE454B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7C9979-4C73-44A9-BC16-11389F4F6635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7C9979-4C73-44A9-BC16-11389F4F6635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7C9979-4C73-44A9-BC16-11389F4F6635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7C9979-4C73-44A9-BC16-11389F4F6635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEFF3690-204B-4EF1-8504-896E074C3D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEFF3690-204B-4EF1-8504-896E074C3D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEFF3690-204B-4EF1-8504-896E074C3D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEFF3690-204B-4EF1-8504-896E074C3D7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF9B43A5-4996-4C98-9828-AE68DD97A9A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF9B43A5-4996-4C98-9828-AE68DD97A9A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF9B43A5-4996-4C98-9828-AE68DD97A9A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF9B43A5-4996-4C98-9828-AE68DD97A9A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{99D7D4AC-A52D-4D33-84A5-2B4777CEF547} = {6A9A1185-604B-4516-BAF6-0ABDBDF65CEC}
+		{6258F223-9251-4540-945B-AB7C9AE454B7} = {6A9A1185-604B-4516-BAF6-0ABDBDF65CEC}
+	EndGlobalSection
+EndGlobal
