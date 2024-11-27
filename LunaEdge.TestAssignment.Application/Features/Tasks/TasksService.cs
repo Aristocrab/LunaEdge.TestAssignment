@@ -18,15 +18,15 @@ public class TasksService : ITasksService
         _usersRepository = usersRepository;
     }
     
-    public Task<List<TaskItem>> GetTasks(Guid userId)
+    public Task<List<TaskDto>> GetTasks(Guid userId)
     {
-        var taskByUserId = new TaskByUserIdSpec(userId);
+        var taskByUserId = new TaskDtoByUserIdSpec(userId);
         return _tasksRepository.ListAsync(taskByUserId);
     }
 
-    public async Task<TaskItem> GetTask(Guid userId, Guid taskId)
+    public async Task<TaskDto> GetTask(Guid userId, Guid taskId)
     {
-        var taskByUserId = new TaskByUserIdSpec(userId, taskId);
+        var taskByUserId = new TaskDtoByUserIdSpec(userId, taskId);
         var task = await _tasksRepository.FirstOrDefaultAsync(taskByUserId);
 
         task.ThrowIfNull(_ => new TaskNotFoundException(taskId));
@@ -34,7 +34,7 @@ public class TasksService : ITasksService
         return task;
     }
 
-    public async Task<TaskItem> CreateTask(Guid userId, CreateTaskDto task)
+    public async Task<Guid> CreateTask(Guid userId, CreateTaskDto task)
     {
         var user = await _usersRepository.GetByIdAsync(userId);
         
@@ -48,10 +48,12 @@ public class TasksService : ITasksService
             User = user
         };
         
-        return await _tasksRepository.AddAsync(newTask);
+        var res = await _tasksRepository.AddAsync(newTask);
+        
+        return res.Id;
     }
 
-    public async Task<TaskItem> UpdateTask(Guid userId, Guid taskId, CreateTaskDto task)
+    public async Task<Guid> UpdateTask(Guid userId, Guid taskId, CreateTaskDto task)
     {
         var taskByUserId = new TaskByUserIdSpec(userId, taskId);
         var existingTask = await _tasksRepository.FirstOrDefaultAsync(taskByUserId);
@@ -64,7 +66,7 @@ public class TasksService : ITasksService
         
         await _tasksRepository.UpdateAsync(existingTask);
         
-        return existingTask;
+        return existingTask.Id;
     }
 
     public async Task DeleteTask(Guid userId, Guid taskId)

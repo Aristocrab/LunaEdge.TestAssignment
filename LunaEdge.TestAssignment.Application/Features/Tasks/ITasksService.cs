@@ -1,13 +1,12 @@
 using LunaEdge.TestAssignment.Application.Features.Tasks.Dtos;
-using LunaEdge.TestAssignment.Domain.Entities;
 
 namespace LunaEdge.TestAssignment.Application.Features.Tasks;
 
 public interface ITasksService
 {
-    Task<List<TaskItem>> GetTasks(Guid userId);
-    Task<TaskItem> GetTask(Guid userId, Guid taskId);
-    Task<TaskItem> CreateTask(Guid userId, CreateTaskDto task);
-    Task<TaskItem> UpdateTask(Guid userId, Guid taskId, CreateTaskDto task);
+    Task<List<TaskDto>> GetTasks(Guid userId);
+    Task<TaskDto> GetTask(Guid userId, Guid taskId);
+    Task<Guid> CreateTask(Guid userId, CreateTaskDto task);
+    Task<Guid> UpdateTask(Guid userId, Guid taskId, CreateTaskDto task);
     Task DeleteTask(Guid userId, Guid taskId);
 }
