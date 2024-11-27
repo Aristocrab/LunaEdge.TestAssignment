@@ -1,13 +1,58 @@
+using System.Text;
+using FluentValidation;
+using LunaEdge.TestAssignment.Application.Database;
+using LunaEdge.TestAssignment.Application.Database.Repositories;
+using LunaEdge.TestAssignment.Application.Features.Users;
+using LunaEdge.TestAssignment.Application.Features.Users.Validators;
 using LunaEdge.TestAssignment.ServiceDefaults;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 namespace LunaEdge.TestAssignment.WebApi;
 
 public static class DependencyInjection
 {
-    public static WebApplicationBuilder AddWebServices(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddApiServices(this WebApplicationBuilder builder)
     {
+        // Add controllers
         builder.Services.AddControllers();
+        
+        // Add services
+        builder.Services.Scan(scan => scan
+            .FromAssemblyOf<IUsersService>()
+            .AddClasses(classes => 
+                classes.Where(x => x.Name.EndsWith("Service")))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+        );
+        
+        // ProblemDetails
+        builder.Services.AddProblemDetails();
+        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+        // Add database
+        builder.AddNpgsqlDbContext<AppDbContext>("postgresDb");
+        builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+        
+        // FluentValidation
+        builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
+        
+        // Auth
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)),
+                };
+            });
+        builder.Services.AddAuthorization();
         
         // Add service defaults & Aspire client integrations.
         builder.AddServiceDefaults();
