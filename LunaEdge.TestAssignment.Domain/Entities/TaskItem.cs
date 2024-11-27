@@ -3,7 +3,7 @@ using LunaEdge.TestAssignment.Domain.Enums;
 
 namespace LunaEdge.TestAssignment.Domain.Entities;
 
-public class Task : Entity
+public class TaskItem : Entity
 {
     public required string Title { get; set; }
     public string? Description { get; set; }

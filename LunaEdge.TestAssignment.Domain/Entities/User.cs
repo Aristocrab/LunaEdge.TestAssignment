@@ -8,5 +8,5 @@ public class User : Entity
     public required string Email { get; set; }
     public required string PasswordHash { get; set; }
 
-    public required List<Task> Tasks { get; set; }
+    public List<TaskItem> Tasks { get; set; } = [];
 }
