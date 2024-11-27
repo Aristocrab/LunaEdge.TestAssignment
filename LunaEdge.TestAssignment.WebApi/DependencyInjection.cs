@@ -29,7 +29,6 @@ public static class DependencyInjection
         
         // ProblemDetails
         builder.Services.AddProblemDetails();
-        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
         // Add database
         builder.AddNpgsqlDbContext<AppDbContext>("postgresDb");

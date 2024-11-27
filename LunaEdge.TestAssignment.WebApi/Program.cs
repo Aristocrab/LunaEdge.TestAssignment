@@ -1,6 +1,7 @@
 using LunaEdge.TestAssignment.Application.Database;
 using LunaEdge.TestAssignment.ServiceDefaults;
 using LunaEdge.TestAssignment.WebApi;
+using LunaEdge.TestAssignment.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseExceptionHandler();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
