@@ -5,6 +5,7 @@ using LunaEdge.TestAssignment.Application.Features.Users.Dtos;
 using LunaEdge.TestAssignment.Application.Features.Users.Specifications;
 using LunaEdge.TestAssignment.Domain.Entities;
 using LunaEdge.TestAssignment.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 using Throw;
 
 namespace LunaEdge.TestAssignment.Application.Features.Users;
@@ -14,14 +15,17 @@ public class UsersService : IUsersService
     private readonly IRepository<User> _usersRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IPasswordHashingService _passwordHashingService;
+    private readonly ILogger<UsersService> _logger;
 
     public UsersService(IRepository<User> usersRepository, 
         IJwtTokenService jwtTokenService, 
-        IPasswordHashingService passwordHashingService)
+        IPasswordHashingService passwordHashingService,
+        ILogger<UsersService> logger)
     {
         _usersRepository = usersRepository;
         _jwtTokenService = jwtTokenService;
         _passwordHashingService = passwordHashingService;
+        _logger = logger;
     }
 
     public async Task RegisterUser(RegisterDto user)
@@ -44,6 +48,10 @@ public class UsersService : IUsersService
             Email = user.Email,
             PasswordHash = _passwordHashingService.HashPassword(user.Password)
         };
+
+        _logger.LogInformation("Registering new user with username {Username} and email {Email}", 
+            newUser.Username, 
+            newUser.Email);
         
         await _usersRepository.AddAsync(newUser);
     }
