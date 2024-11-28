@@ -1,3 +1,4 @@
+using FluentValidation;
 using LunaEdge.TestAssignment.Application.Database.Repositories;
 using LunaEdge.TestAssignment.Application.Features.Tasks.Dtos;
 using LunaEdge.TestAssignment.Application.Features.Tasks.Specifications;
@@ -13,20 +14,26 @@ public class TasksService : ITasksService
     private readonly IRepository<TaskItem> _tasksRepository;
     private readonly IRepository<User> _usersRepository;
     private readonly ILogger<TasksService> _logger;
+    private readonly IValidator<CreateTaskDto> _createTaskDto;
 
     public TasksService(IRepository<TaskItem> tasksRepository, 
         IRepository<User> usersRepository,
-        ILogger<TasksService> logger)
+        ILogger<TasksService> logger,
+        IValidator<CreateTaskDto> createTaskDto)
     {
         _tasksRepository = tasksRepository;
         _usersRepository = usersRepository;
         _logger = logger;
+        _createTaskDto = createTaskDto;
     }
     
-    public Task<List<TaskDto>> GetTasks(Guid userId)
+    public Task<List<TaskDto>> GetTasks(Guid userId, 
+        TaskFilterDto? filter, 
+        TaskSortDto? sort, 
+        PaginationDto? pagination)
     {
-        var taskByUserId = new TaskDtoByUserIdSpec(userId);
-        return _tasksRepository.ListAsync(taskByUserId);
+        var taskDtoWithQuerySpec = new TaskDtoWithQuerySpec(userId, filter, sort, pagination);
+        return _tasksRepository.ListAsync(taskDtoWithQuerySpec);
     }
 
     public async Task<TaskDto> GetTask(Guid userId, Guid taskId)
@@ -41,6 +48,8 @@ public class TasksService : ITasksService
 
     public async Task<Guid> CreateTask(Guid userId, CreateTaskDto task)
     {
+        await _createTaskDto.ValidateAndThrowAsync(task);
+        
         var user = await _usersRepository.GetByIdAsync(userId);
         
         user.ThrowIfNull(_ => new UserNotFoundException(userId));
@@ -50,7 +59,9 @@ public class TasksService : ITasksService
             Title = task.Title,
             Description = task.Description,
             DueDate = task.DueDate,
-            User = user
+            User = user,
+            Status = task.Status,
+            Priority = task.Priority
         };
         
         var res = await _tasksRepository.AddAsync(newTask);
@@ -72,6 +83,8 @@ public class TasksService : ITasksService
         existingTask.Title = task.Title;
         existingTask.Description = task.Description;
         existingTask.DueDate = task.DueDate;
+        existingTask.Status = task.Status;
+        existingTask.Priority = task.Priority;
         
         await _tasksRepository.UpdateAsync(existingTask);
         

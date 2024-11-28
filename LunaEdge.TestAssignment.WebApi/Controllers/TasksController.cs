@@ -17,9 +17,12 @@ public class TasksController : BaseController
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetTasks()
+    public async Task<IActionResult> GetTasks(
+        [FromQuery] TaskFilterDto? filter = null, 
+        [FromQuery] TaskSortDto? sort = null, 
+        [FromQuery] PaginationDto? pagination = null)
     {
-        var tasks = await _tasksService.GetTasks(CurrentUserId);
+        var tasks = await _tasksService.GetTasks(CurrentUserId, filter, sort, pagination);
         return Ok(tasks);
     }
     

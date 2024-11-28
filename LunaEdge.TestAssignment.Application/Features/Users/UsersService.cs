@@ -1,3 +1,4 @@
+using FluentValidation;
 using LunaEdge.TestAssignment.Application.Database.Repositories;
 using LunaEdge.TestAssignment.Application.Features.Jwt;
 using LunaEdge.TestAssignment.Application.Features.PasswordHashing;
@@ -16,20 +17,25 @@ public class UsersService : IUsersService
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IPasswordHashingService _passwordHashingService;
     private readonly ILogger<UsersService> _logger;
+    private readonly IValidator<RegisterDto> _registerDtoValidator;
 
     public UsersService(IRepository<User> usersRepository, 
         IJwtTokenService jwtTokenService, 
         IPasswordHashingService passwordHashingService,
-        ILogger<UsersService> logger)
+        ILogger<UsersService> logger,
+        IValidator<RegisterDto> registerDtoValidator)
     {
         _usersRepository = usersRepository;
         _jwtTokenService = jwtTokenService;
         _passwordHashingService = passwordHashingService;
         _logger = logger;
+        _registerDtoValidator = registerDtoValidator;
     }
 
     public async Task RegisterUser(RegisterDto user)
     {
+        await _registerDtoValidator.ValidateAndThrowAsync(user);
+        
         var userByUsernameSpec = new UserByUsernameSpec(user.Username);
         var userWithSameUsernameExists = await _usersRepository.AnyAsync(userByUsernameSpec);
         userWithSameUsernameExists
