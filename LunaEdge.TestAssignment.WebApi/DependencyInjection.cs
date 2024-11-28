@@ -59,6 +59,7 @@ public static class DependencyInjection
         // Add Serilog with OpenTelemetry
         var logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
+#if DEBUG
             .WriteTo.OpenTelemetry(options =>
             {
                 options.Endpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
@@ -83,6 +84,7 @@ public static class DependencyInjection
 
                 options.ResourceAttributes.Add(otelResourceAttribute, otelResourceAttributeValue);
             })
+#endif
             .CreateLogger();
         builder.Services.AddSerilog(logger);
         
