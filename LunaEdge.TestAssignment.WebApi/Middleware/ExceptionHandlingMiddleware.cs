@@ -1,3 +1,4 @@
+using FluentValidation;
 using LunaEdge.TestAssignment.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,13 +37,19 @@ public sealed class ExceptionHandlingMiddleware
             UserAlreadyExistsException => StatusCodes.Status409Conflict,
             _ => StatusCodes.Status500InternalServerError
         };
+        
+        var message = exception.Message;
+        if (exception is ValidationException validationException)
+        {
+            message = validationException.Errors.First().ErrorMessage;
+        }
 
         var problemDetails = new ProblemDetails
         {
             Status = statusCode,
             Title = "An error occurred",
             Type = exception.GetType().Name,
-            Detail = exception.Message
+            Detail = message
         };
 
         // Use IProblemDetailsService to write the response
