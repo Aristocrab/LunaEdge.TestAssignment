@@ -32,17 +32,17 @@ public class UsersService : IUsersService
         _registerDtoValidator = registerDtoValidator;
     }
 
-    public async Task RegisterUser(RegisterDto user)
+    public async Task RegisterUser(RegisterDto registerDto)
     {
-        await _registerDtoValidator.ValidateAndThrowAsync(user);
+        await _registerDtoValidator.ValidateAndThrowAsync(registerDto);
         
-        var userByUsernameSpec = new UserByUsernameSpec(user.Username);
+        var userByUsernameSpec = new UserByUsernameSpec(registerDto.Username);
         var userWithSameUsernameExists = await _usersRepository.AnyAsync(userByUsernameSpec);
         userWithSameUsernameExists
             .Throw(_ => new UserAlreadyExistsException())
             .IfTrue();
         
-        var userByEmailSpec = new UserByEmailSpec(user.Email);
+        var userByEmailSpec = new UserByEmailSpec(registerDto.Email);
         var userWithSameEmailExists = await _usersRepository.AnyAsync(userByEmailSpec);
         userWithSameEmailExists
             .Throw(_ => new UserAlreadyExistsException())
@@ -50,9 +50,9 @@ public class UsersService : IUsersService
         
         var newUser = new User
         {
-            Username = user.Username,
-            Email = user.Email,
-            PasswordHash = _passwordHashingService.HashPassword(user.Password)
+            Username = registerDto.Username,
+            Email = registerDto.Email,
+            PasswordHash = _passwordHashingService.HashPassword(registerDto.Password)
         };
 
         _logger.LogInformation("Registering new user with username {Username} and email {Email}", 
