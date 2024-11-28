@@ -14,8 +14,7 @@ public class JwtTokenService : IJwtTokenService
 
     public JwtTokenService(IConfiguration configuration)
     {
-        // todo
-        _secretKey = configuration["Jwt:SecretKey"]!;
+        _secretKey = configuration["Jwt:SecretKey"]!; 
         _issuer = configuration["Jwt:Issuer"]!;
     }
 
