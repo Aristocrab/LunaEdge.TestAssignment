@@ -1,5 +1,7 @@
 # LunaEdge.TestAssignment
 
+![example workflow](https://github.com/Aristocrab/LunaEdge.TestAssignment/actions/workflows/dotnet.yml/badge.svg)
+
 ## Used technologies
 - .NET 9
 - [Aspire](https://github.com/dotnet/aspire), Docker, Docker Compose
