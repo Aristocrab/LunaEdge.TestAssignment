@@ -6,11 +6,17 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "mPObV027tD5dLC6snruqfh"
     volumes:
-    - "lunaedge-testassignment-apphost-bc8622264b-postgres-data:/var/lib/postgresql/data"
+      - "lunaedge-testassignment-apphost-bc8622264b-postgres-data:/var/lib/postgresql/data"
     ports:
-    - target: 5432
-      published: 5432
+      - target: 5432
+        published: 5432
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
   apiservice:
     container_name: "apiservice"
     image: "apiservice:latest"
@@ -19,10 +25,14 @@ services:
       HTTP_PORTS: "8080"
       ConnectionStrings__postgresDb: "Host=postgres;Port=5432;Username=postgres;Password=mPObV027tD5dLC6snruqfh;Database=postgresDb"
     ports:
-    - target: 8080
-      published: 10000
-    - target: 8443
-      published: 10001
+      - target: 8080
+        published: 10000
+      - target: 8443
+        published: 10001
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   lunaedge-testassignment-apphost-bc8622264b-postgres-data: {}
