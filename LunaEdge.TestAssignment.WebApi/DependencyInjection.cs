@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using FluentValidation;
 using LunaEdge.TestAssignment.Application.Database;
@@ -7,6 +8,7 @@ using LunaEdge.TestAssignment.Application.Features.Users.Validators;
 using LunaEdge.TestAssignment.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 namespace LunaEdge.TestAssignment.WebApi;
@@ -35,6 +37,7 @@ public static class DependencyInjection
         builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         
         // FluentValidation
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
         builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
         
         // Auth
@@ -87,6 +90,34 @@ public static class DependencyInjection
 #endif
             .CreateLogger();
         builder.Services.AddSerilog(logger);
+        
+        // Add Swagger
+        builder.Services.AddSwaggerGen(options =>
+        {
+    
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
         
         return builder;
     }

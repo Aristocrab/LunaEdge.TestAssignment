@@ -38,18 +38,18 @@ public sealed class ExceptionHandlingMiddleware
             _ => StatusCodes.Status500InternalServerError
         };
         
-        var message = exception.Message;
-        if (exception is ValidationException validationException)
+        var errorMessage = exception switch
         {
-            message = validationException.Errors.First().ErrorMessage;
-        }
+            ValidationException validationException => validationException.Errors.First().ErrorMessage,
+            _ => exception.Message
+        };
 
         var problemDetails = new ProblemDetails
         {
             Status = statusCode,
             Title = "An error occurred",
             Type = exception.GetType().Name,
-            Detail = message
+            Detail = errorMessage
         };
 
         // Use IProblemDetailsService to write the response

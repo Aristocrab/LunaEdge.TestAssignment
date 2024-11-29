@@ -16,7 +16,8 @@ public class RegisterDtoValidator : AbstractValidator<RegisterDto>
             .NotEmpty()
             .MinimumLength(6)
             .MaximumLength(50)
-            .Must(UseSpecialCharacters);
+            .Must(UseSpecialCharacters)
+            .WithMessage("Password must contain at least one special character");
     }
     
     private static bool UseSpecialCharacters(string password)
