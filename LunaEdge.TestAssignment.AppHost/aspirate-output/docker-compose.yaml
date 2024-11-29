@@ -1,0 +1,28 @@
+services:
+  postgres:
+    container_name: "postgres"
+    image: "docker.io/library/postgres:17.0"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "mPObV027tD5dLC6snruqfh"
+    volumes:
+    - "lunaedge-testassignment-apphost-bc8622264b-postgres-data:/var/lib/postgresql/data"
+    ports:
+    - target: 5432
+      published: 5432
+    restart: unless-stopped
+  apiservice:
+    container_name: "apiservice"
+    image: "apiservice:latest"
+    environment:
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "8080"
+      ConnectionStrings__postgresDb: "Host=postgres;Port=5432;Username=postgres;Password=mPObV027tD5dLC6snruqfh;Database=postgresDb"
+    ports:
+    - target: 8080
+      published: 10000
+    - target: 8443
+      published: 10001
+    restart: unless-stopped
+volumes:
+  lunaedge-testassignment-apphost-bc8622264b-postgres-data: {}
