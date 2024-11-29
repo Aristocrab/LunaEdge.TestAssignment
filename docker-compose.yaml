@@ -19,7 +19,9 @@ services:
 
   apiservice:
     container_name: "apiservice"
-    image: "apiservice:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       HTTP_PORTS: "8080"
