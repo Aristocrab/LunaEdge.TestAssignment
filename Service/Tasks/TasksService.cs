@@ -1,6 +1,7 @@
 using Domain.Entities;
 using ErrorOr;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Service.Tasks.Dtos;
 using Service.Tasks.Repositories;
 
@@ -11,14 +12,17 @@ public class TasksService : ITasksService
     private readonly ITasksRepository _tasksRepository;
     private readonly IValidator<CreateTaskDto> _createTaskDtoValidator;
     private readonly IValidator<UpdateTaskDto> _updateTaskDtoValidator;
+    private readonly ILogger<TasksService> _logger;
 
     public TasksService(ITasksRepository tasksRepository, 
         IValidator<CreateTaskDto> createTaskDtoValidator,
-        IValidator<UpdateTaskDto> updateTaskDtoValidator)
+        IValidator<UpdateTaskDto> updateTaskDtoValidator,
+        ILogger<TasksService> logger)
     {
         _tasksRepository = tasksRepository;
         _createTaskDtoValidator = createTaskDtoValidator;
         _updateTaskDtoValidator = updateTaskDtoValidator;
+        _logger = logger;
     }
     
     public async Task<PagedTodoTasks> GetAllTasks(Guid userId, TaskQueryParameters queryParams)
@@ -57,6 +61,8 @@ public class TasksService : ITasksService
         };
         
         await _tasksRepository.AddAsync(newTask);
+        
+        _logger.LogInformation("Task {Title} has been created", newTask.Title);
 
         return Result.Created;
     }
@@ -76,6 +82,8 @@ public class TasksService : ITasksService
         existingTask.DueDate = updateTaskDto.DueDate;
 
         await _tasksRepository.SaveChangesAsync();
+        
+        _logger.LogInformation("Task {Title} has been updated", existingTask.Title);
 
         return Result.Updated;
     }
@@ -87,6 +95,8 @@ public class TasksService : ITasksService
             return Error.NotFound("Task was not found");
 
         await _tasksRepository.DeleteAsync(existingTask);
+        
+        _logger.LogInformation("Task {Title} has been deleted", existingTask.Title);
 
         return Result.Deleted;
     }

@@ -1,6 +1,7 @@
 using Domain.Entities;
 using ErrorOr;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Service.Users.Dtos;
 using Service.Users.JwtTokens;
 using Service.Users.PasswordHashing;
@@ -12,6 +13,7 @@ public class UsersService : IUsersService
 {
     private readonly IValidator<RegisterDto> _registerDtoValidator;
     private readonly IValidator<LoginDto> _loginDtoValidator;
+    private readonly ILogger<UsersService> _logger;
     private readonly IUsersRepository _usersRepository;
     private readonly IPasswordHashingService _passwordHashingService;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
@@ -20,13 +22,15 @@ public class UsersService : IUsersService
         IPasswordHashingService passwordHashingService, 
         IJwtTokenGenerator jwtTokenGenerator,
         IValidator<RegisterDto> registerDtoValidator,
-        IValidator<LoginDto> loginDtoValidator)
+        IValidator<LoginDto> loginDtoValidator,
+        ILogger<UsersService> logger)
     {
         _usersRepository = usersRepository;
         _passwordHashingService = passwordHashingService;
         _jwtTokenGenerator = jwtTokenGenerator;
         _registerDtoValidator = registerDtoValidator;
         _loginDtoValidator = loginDtoValidator;
+        _logger = logger;
     }
     
     public async Task<ErrorOr<Created>> Register(RegisterDto registerDto)
@@ -55,6 +59,8 @@ public class UsersService : IUsersService
         };
 
         await _usersRepository.AddAsync(newUser);
+        
+        _logger.LogInformation("User {Username} has been registered", newUser.Username);
 
         return Result.Created;
     }
@@ -77,6 +83,8 @@ public class UsersService : IUsersService
         {
             return Error.Failure(description: "Password is incorrect");
         }
+        
+        _logger.LogInformation("User {Username} has been logged", user.Username);
 
         return _jwtTokenGenerator.Generate(user);
     }
