@@ -20,7 +20,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     {
         var claims = new List<Claim>
         {
-            new("username", user.Username),
             new("userId", user.Id.ToString()),
         };
 

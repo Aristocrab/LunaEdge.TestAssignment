@@ -33,7 +33,7 @@ public class UsersService : IUsersService
         _logger = logger;
     }
     
-    public async Task<ErrorOr<Created>> Register(RegisterDto registerDto)
+    public async Task<ErrorOr<string>> Register(RegisterDto registerDto)
     {
         var validationResult = await _registerDtoValidator.ValidateAsync(registerDto);
         if (!validationResult.IsValid)
@@ -62,7 +62,7 @@ public class UsersService : IUsersService
         
         _logger.LogInformation("User {Username} has been registered", newUser.Username);
 
-        return Result.Created;
+        return _jwtTokenGenerator.Generate(newUser);
     }
 
     public async Task<ErrorOr<string>> Login(LoginDto loginDto)

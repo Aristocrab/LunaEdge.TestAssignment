@@ -1,6 +1,7 @@
 using Domain.Entities;
 using ErrorOr;
 using FluentValidation;
+using Mapster;
 using Microsoft.Extensions.Logging;
 using Service.Tasks.Dtos;
 using Service.Tasks.Repositories;
@@ -32,19 +33,19 @@ public class TasksService : ITasksService
 
         return new PagedTodoTasks
         {
-            Items = items,
+            Items = items.Adapt<List<TodoTaskDto>>(),
             TotalCount = totalCount,
             Page = queryParams.Page,
             PageSize = queryParams.PageSize
         };
     }
     
-    public async Task<ErrorOr<TodoTask>> GetTaskById(Guid taskId, Guid userId)
+    public async Task<ErrorOr<TodoTaskDto>> GetTaskById(Guid taskId, Guid userId)
     {
         var result = await _tasksRepository.GetByIdAsync(taskId, userId);
-        if (result is null) return Error.NotFound("Task was not found");
+        if (result is null) return Error.NotFound(description: "Task was not found");
 
-        return result;
+        return result.Adapt<TodoTaskDto>();
     }
 
     public async Task<ErrorOr<Created>> CreateTask(CreateTaskDto createTaskDto, Guid userId)
@@ -60,7 +61,7 @@ public class TasksService : ITasksService
             DueDate = createTaskDto.DueDate,
         };
         
-        await _tasksRepository.AddAsync(newTask);
+        await _tasksRepository.AddAsync(newTask, userId);
         
         _logger.LogInformation("Task {Title} has been created", newTask.Title);
 
@@ -80,6 +81,8 @@ public class TasksService : ITasksService
         existingTask.Title = updateTaskDto.Title;
         existingTask.Description = updateTaskDto.Description;
         existingTask.DueDate = updateTaskDto.DueDate;
+        existingTask.Priority = updateTaskDto.Priority;
+        existingTask.Status = updateTaskDto.Status;
 
         await _tasksRepository.SaveChangesAsync();
         
@@ -92,7 +95,7 @@ public class TasksService : ITasksService
     {
         var existingTask = await _tasksRepository.GetByIdAsync(taskId, userId);
         if (existingTask is null)
-            return Error.NotFound("Task was not found");
+            return Error.NotFound(description: "Task was not found");
 
         await _tasksRepository.DeleteAsync(existingTask);
         

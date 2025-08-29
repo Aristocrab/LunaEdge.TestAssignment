@@ -21,13 +21,10 @@ public static class DependencyInjection
         builder.Services.AddTransient<IPasswordHashingService, PasswordHashingService>();
 
         builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-        builder.Services.AddScoped<IUsersService, IUsersService>();
+        builder.Services.AddScoped<IUsersService, UsersService>();
         
         builder.Services.AddScoped<ITasksRepository, TasksRepository>();
-        builder.Services.AddScoped<ITasksService, ITasksService>();
-        
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres:ConnectionString")));
+        builder.Services.AddScoped<ITasksService, TasksService>();
 
         builder.Services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
     }

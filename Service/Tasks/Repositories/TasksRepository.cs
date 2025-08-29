@@ -60,8 +60,7 @@ public class TasksRepository : ITasksRepository
         
         return await query.CountAsync();
     }
-
-
+    
     public async Task<TodoTask?> GetByIdAsync(Guid taskId, Guid userId)
     {
         return await _context.TodoTasks
@@ -69,8 +68,10 @@ public class TasksRepository : ITasksRepository
             .FirstOrDefaultAsync(t => t.Id == taskId && t.User.Id == userId);
     }
 
-    public async Task AddAsync(TodoTask task)
+    public async Task AddAsync(TodoTask task, Guid userId)
     {
+        task.User = await _context.Users.FirstAsync(x => x.Id == userId);
+        
         await _context.TodoTasks.AddAsync(task);
         await _context.SaveChangesAsync();
     }

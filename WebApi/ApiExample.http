@@ -1,0 +1,31 @@
+### Register new user
+POST http://localhost:5082/users/register
+Content-Type: application/json
+
+{
+  "username": "Bobert",
+  "email": "bobert@gmail.com",
+  "password": "qwerty"
+}
+
+### Login via username
+POST http://localhost:5082/users/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "Bobert",
+  "password": "qwerty"
+}
+
+### Login via email
+POST http://localhost:5082/users/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "bobert@gmail.com",
+  "password": "qwerty"
+}
+
+### Get all tasks
+GET http://localhost:5082/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMTk4ZjY0Ni1hM2ExLTczNjktYTA4Yy1iN2MwMWFjMjI5ZGMiLCJpc3MiOiJMdW5hRWRnZSIsImF1ZCI6Ikx1bmFFZGdlIn0.y0VwMf4HYkPVeJAPfdR3svlrxSxbeuyFUeDLVfvK-iM
